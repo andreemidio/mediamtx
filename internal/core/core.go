@@ -23,6 +23,7 @@ import (
 	"github.com/bluenviron/mediamtx/internal/auth"
 	"github.com/bluenviron/mediamtx/internal/conf"
 	"github.com/bluenviron/mediamtx/internal/confwatcher"
+	"github.com/bluenviron/mediamtx/internal/embeddedffmpeg"
 	"github.com/bluenviron/mediamtx/internal/externalcmd"
 	"github.com/bluenviron/mediamtx/internal/logger"
 	"github.com/bluenviron/mediamtx/internal/metrics"
@@ -109,6 +110,7 @@ type Core struct {
 	confPath        string
 	conf            *conf.Conf
 	logger          *logger.Logger
+	embeddedFFmpeg  *embeddedffmpeg.Instance
 	externalCmdPool *externalcmd.Pool
 	authManager     *auth.Manager
 	metrics         *metrics.Metrics
@@ -327,6 +329,14 @@ func (p *Core) createResources(initial bool) error {
 		rlimit.Raise() //nolint:errcheck
 
 		gin.SetMode(gin.ReleaseMode)
+
+		p.embeddedFFmpeg, err = embeddedffmpeg.Setup()
+		if err != nil {
+			return err
+		}
+		if p.embeddedFFmpeg != nil {
+			p.Log(logger.Info, "embedded FFmpeg available at %s", p.embeddedFFmpeg.Path())
+		}
 
 		p.externalCmdPool = &externalcmd.Pool{}
 		p.externalCmdPool.Initialize()
@@ -1060,6 +1070,11 @@ func (p *Core) closeResources(newConf *conf.Conf, calledByAPI bool) {
 	if newConf == nil && p.externalCmdPool != nil {
 		p.Log(logger.Info, "waiting for running hooks")
 		p.externalCmdPool.Close()
+	}
+
+	if newConf == nil && p.embeddedFFmpeg != nil {
+		p.embeddedFFmpeg.Close()
+		p.embeddedFFmpeg = nil
 	}
 
 	if closeLogger && p.logger != nil {

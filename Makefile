@@ -16,6 +16,7 @@ help:
 	@echo "  lint             run linters"
 	@echo "  binaries         build binaries for all supported platforms"
 	@echo "  ffmpeg-static    build static FFmpeg libraries"
+	@echo "  mediamtx-ffmpeg  build MediaMTX with FFmpeg embedded"
 	@echo "  dockerhub        build and push images to Docker Hub"
 	@echo ""
 

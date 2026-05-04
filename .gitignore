@@ -1,6 +1,8 @@
 /tmp
 /binaries
 /ffmpeg-static
+/internal/embeddedffmpeg/ffmpeg
+/mediamtx-ffmpeg
 /coverage*.txt
 /api/*.html
 /internal/core/VERSION

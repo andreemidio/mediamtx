@@ -138,3 +138,11 @@ The generated package includes `include/`, `lib/`, `lib/pkgconfig/`, `bin/ffmpeg
 PKG_CONFIG_PATH="$PWD/ffmpeg-static/lib/pkgconfig" \
   pkg-config --static --libs libavformat libavcodec libavutil
 ```
+
+To build a MediaMTX binary that carries its own static FFmpeg executable and makes it available to hooks through `PATH`, run:
+
+```sh
+make mediamtx-ffmpeg
+```
+
+The command produces `mediamtx-ffmpeg`. At startup, this binary extracts the embedded FFmpeg executable to a temporary directory and prepends that directory to `PATH`, so commands such as `ffmpeg ...` work even when FFmpeg is not installed on the target machine.
