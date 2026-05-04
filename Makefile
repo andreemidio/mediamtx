@@ -15,6 +15,7 @@ help:
 	@echo "  test-e2e         run end-to-end tests"
 	@echo "  lint             run linters"
 	@echo "  binaries         build binaries for all supported platforms"
+	@echo "  ffmpeg-static    build static FFmpeg libraries"
 	@echo "  dockerhub        build and push images to Docker Hub"
 	@echo ""
 

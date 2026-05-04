@@ -115,3 +115,26 @@ The official Docker image can be recompiled by following these steps:
    This will produce the `my-mediamtx` image.
 
    A Dockerfile is available for each image variant (`standard.Dockerfile`, `ffmpeg.Dockerfile`, `rpi.Dockerfile`, `ffmpeg-rpi.Dockerfile`).
+
+## Static FFmpeg libraries
+
+_MediaMTX_ does not link FFmpeg directly. The `ffmpeg` Docker image variant installs FFmpeg as an external command-line tool.
+
+If you need FFmpeg static libraries (`libavcodec.a`, `libavformat.a`, `libavutil.a`, and related headers) for another integration, build them with:
+
+```sh
+make ffmpeg-static
+```
+
+The command builds FFmpeg in Docker and exports the result to `ffmpeg-static/`. To select a different FFmpeg tag or branch:
+
+```sh
+make ffmpeg-static FFMPEG_VERSION=n8.0
+```
+
+The generated package includes `include/`, `lib/`, `lib/pkgconfig/`, `bin/ffmpeg`, and `bin/ffprobe`. It uses FFmpeg's built-in components only; external codec libraries are not enabled by default. Link consumers with `pkg-config`, for example:
+
+```sh
+PKG_CONFIG_PATH="$PWD/ffmpeg-static/lib/pkgconfig" \
+  pkg-config --static --libs libavformat libavcodec libavutil
+```

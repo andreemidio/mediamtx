@@ -1,5 +1,6 @@
 /tmp
 /binaries
+/ffmpeg-static
 /coverage*.txt
 /api/*.html
 /internal/core/VERSION
